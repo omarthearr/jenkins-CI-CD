@@ -1,0 +1,65 @@
+<li class="nav-item">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-copy"></i>
+        <p>
+            Unidades
+            <i class="fas fa-angle-left right"></i>
+            <span class="badge badge-info right">6</span>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{% url 'lista_unidades' %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lista</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'nueva_unidad' %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Nueva</p>
+            </a>
+        </li>
+        
+    </ul>
+</li>
+<li class="nav-item">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-chart-pie"></i>
+        <p>
+            Programas
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{% url 'nuevo_programa' %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Nuevo</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'lista_programas' %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lista</p>
+            </a>
+        </li>
+    </ul>
+</li>
+<li class="nav-item">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-chart-pie"></i>
+        <p>
+            Usuarios
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{% url 'lista_usuarios' %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lista</p>
+            </a>
+        </li>
+    </ul>
+</li>

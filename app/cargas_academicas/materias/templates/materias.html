@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de materias</title>
+</head>
+<body>
+    <h1>Lista de materias</h1>
+    <table width="100%">
+        <thead>
+            <tr>
+                <th>Clave</th>
+                <th>Nombre</th>
+                <th>Créditos</th>
+                <th>Semestre</th>
+                <th>Programa académico</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for materia in materias %}
+              <tr>
+                <td>{{materia.clave}}</td>
+                <td>{{materia.nombre}}</td>
+                <td>{{materia.creditos}}</td>
+                <td>{{materia.semestre}}</td>
+                <td>{{materia.programa_academico}}</td>
+                <td>
+                    <a href="{% url 'eliminar_materia' materia.clave %}">Eliminar</a>
+                </td>
+              </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login Cargas Académicas</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static '/fontawesome-free/css/all.min.css' %}">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{% static 'icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <!-- /.login-logo -->
+  <div class="card card-outline card-primary">
+    <div class="card-header text-center">
+      <a href="../../index2.html" class="h1"><b>UAIE</a>
+    </div>
+    <div class="card-body">
+      <p class="login-box-msg">Registro de usuario</p>
+
+      <form method="post">
+        {% csrf_token %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    alert-danger
+                {% else %}
+                    alert-success
+                {% endif %}
+            ">
+            {{ message }}
+          </div>
+          {% endfor %}
+        {% endif %}
+        {% if form.errors %}
+          <div class="alert alert-danger">
+            {{form.errors}}
+          </div>
+        {% endif %}
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" required name="username" placeholder="Usuario" value="{% if form.username.value %}{{form.username.value}}{% endif %}">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="email" class="form-control" required name="email" placeholder="juan@hotcakes.com" value="{% if form.email.value %}{{form.email.value}}{% endif %}">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" class="form-control" required name="password" placeholder="Password" value="{% if form.password.value %}{{form.password.value}}{% endif %}" >
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" class="form-control" required name="re_password" placeholder="Repetir Password" value="{% if form.re_password.value %}{{form.re_password.value}}{% endif %}">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <button type="submit" class="btn btn-primary btn-block">Agregar usuario</button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+      <p class="mb-0">
+        <a href="{% url 'login' %}" class="text-center">Iniciar sesión</a>
+      </p>
+    </div>
+    <!-- /.card-body -->
+  </div>
+  <!-- /.card -->
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="{% static 'jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+</body>
+</html>

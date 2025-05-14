@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Lista de usuarios{% endblock titulo %}
+
+{% block contenido %}
+<h1>Lista de usuarios</h1>
+<form method="post">
+    {% csrf_token %}
+    <select name="grupos" id="">
+        
+        {% for grupo in grupos  %}
+            <option value="{{grupo.id}}">{{grupo}}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Asignar grupo</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" name="todos" id="todos"></th>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th>Grupos</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for usuario in usuarios  %}
+                <tr>
+                    <td><input type="checkbox" name="{{usuario.id}}" id=""></td>
+                    <td>{{usuario.username}}</td>
+                    <td>{{usuario.email}}</td>
+                    <td>
+                        {% for grp in usuario.groups.all %}
+                            {{grp}}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</form>
+{% endblock contenido %}

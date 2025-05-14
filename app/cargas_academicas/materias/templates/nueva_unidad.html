@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block titulo %}
+    {{etiqueta_titulo}} Unidad Académica
+{% endblock titulo %}
+
+{% block contenido %}
+    <div class="card">
+        <div class="card-header">
+            {{etiqueta_titulo}} Unidad Académica
+        </div>
+        <div class="card-body">
+            <form method="post" class="row g-3">
+                {% csrf_token %}
+                {{form.errors}}
+
+                <div class="col-md-6">
+                    <label for="{{ form.nombre.id_for_label }}" class="form-label">{{ form.nombre.label }}
+                    </label>
+                    {{form.nombre}}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.abreviacion.id_for_label }}" class="form-label">{{ form.abreviacion.label }}
+                    </label>
+                    {{form.abreviacion}}
+                </div>
+                <div class="row mt-5">
+                    <button id="btnAgregar" class="btn btn-primary" type="submit">{{etiqueta_boton}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock contenido %}

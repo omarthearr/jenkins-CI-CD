@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+
+{% block titulo %}
+    {{etiqueta_titulo}}
+{% endblock titulo %}
+
+
+{% block contenido %}
+    <div class="card">
+        <div class="card-header">
+            {{etiqueta_titulo}}
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{form.as_p}}
+                <button class="btn btn-block btn-outline-success" type="submit">{{etiqueta_boton}}</button>
+                <a class="btn btn-block btn-outline-secondary" href="{% url 'lista_programas' %}">Cancelar</a>
+            </form>
+        </div>
+    </div>
+
+{% endblock contenido %}

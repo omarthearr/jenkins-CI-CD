@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de multiplicar del numero {{numero}} hasta el {{numero2}}</title>
+</head>
+<body>
+    <h1>Tabla de multiplicar del numero {{numero}} hasta el {{numero2}}</h1>
+    <table>
+        <tbody>
+            
+            {% for multi in multiplicaciones  %}
+                <tr>
+                    <td>{{multi.num}}</td>
+                    <td>X</td>
+                    <td>{{numero}}</td>
+                    <td>=</td>
+                    <td>{{multi.res}}</td>
+                </tr>
+            {% endfor %}
+                
+        </tbody>
+    </table>
+
+</body>
+</html>

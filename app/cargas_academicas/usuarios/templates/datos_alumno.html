@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block titulo %}
+    Datos del alumno
+{% endblock titulo %}
+
+{% block contenido %}
+    <form id="form" method="post">
+        {% csrf_token %}
+            <p>
+                {{form.matricula.label_tag}}
+                {{form.matricula}}
+            </p>
+            <p>
+                {{form.nombre.label_tag}}
+                {{form.nombre}}
+            </p>
+            <p>
+                {{form.nombre.label_tag}}
+                {{form.nombre}}
+            </p>
+            <p>
+                {{form.apelllido_paterno.label_tag}}
+                {{form.apelllido_paterno}}
+            </p>
+            <p>
+                {{form.apelllido_materno.label_tag}}
+                {{form.apelllido_materno}}
+            </p>
+            <p>
+                <label for="id_unidad">Unidad académmica</label>
+                <select name="unidad" id="unidad">
+                    {% for uni in unidades %}
+                        <option value="{{uni.id}}">{{uni.nombre}}</option>
+                    {% endfor %}
+                </select>
+            </p>
+           <p>
+                {{form.programa_academico.label_tag}}
+                {{form.programa_academico}}
+           </p>
+           <p>
+                {{form.fecha_nacimiento.label_tag}}
+                {{form.fecha_nacimiento}}
+           </p>
+        <input type="submit" value="Guardar">
+    </form>
+
+{% endblock contenido %}
+
+
+{% block scripts %}
+    <script>
+        $('#unidad').on('change', function (){
+            $.ajax({
+                url: `/usuarios/obtener-programas/${this.value}`,
+                type: "GET",
+                success: function (response) {
+                    let opciones = "";
+                    response.datos.forEach(function (item) {
+                        opciones += `<option value="${item.id}">${item.nombre}</option>`;
+                    });
+                    $("#id_programa_academico").html(opciones); // I
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        });
+
+    </script>
+{% endblock scripts %}

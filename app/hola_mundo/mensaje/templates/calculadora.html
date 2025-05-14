@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td colspan="4">
+                    <input type="number" name="resultado" value="{{numero}}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit" name="ac">AC</button>
+                </td>
+                <td>
+                    <button type="submit" name="+/-">+/-</button>
+                </td>
+                <td>
+                    <button type="submit" name="%">%</button>
+                </td>
+                <td>
+                    <button type="submit" name="/">/</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit" name="7">7</button>
+                </td>
+                <td>
+                    <button type="submit" name="8">8</button>
+                </td>
+                <td>
+                    <button type="submit" name="9">9</button>
+                </td>
+                <td>
+                    <button type="submit" name="X">X</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit" name="4">4</button>
+                </td>
+                <td>
+                    <button type="submit" name="5">5</button>
+                </td>
+                <td>
+                    <button type="submit" name="6">6</button>
+                </td>
+                <td>
+                    <button type="submit" name="-">-</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit" name="1">1</button>
+                </td>
+                <td>
+                    <button type="submit" name="2">2</button>
+                </td>
+                <td>
+                    <button type="submit" name="3">3</button>
+                </td>
+                <td>
+                    <button type="submit" name="+">+</button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button  type="submit" name="0">0</button>
+                </td>
+                <td>
+                    <button type="submit" name=".">.</button>
+                </td>
+                <td>
+                    {% if operador1 %}
+                      <input type="hidden" name="operador1" value="{{operador1}}">
+                      <input type="hidden" name="operacion" value="{{operacion}}">
+                    {% endif %}
+                    <button type="submit" name="=">=</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

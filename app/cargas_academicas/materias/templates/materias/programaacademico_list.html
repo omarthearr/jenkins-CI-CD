@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+    <h1>Lista de Programas Académicos</h1>
+    <a class="btn btn-primary" href="{% url 'nuevo_programa' %}">Nuevo</a>
+    <form method="post" action="{% url 'lista_programas_filter' %}">
+        {% csrf_token %}
+        <table class="table">
+            <tr>
+                <td>{{form.nombre}}</td>
+                <td>{{form.unidad_academica}}</td>
+                <td>{{form.abreviacion}}</td>
+                <td>
+                    <button class="btn btn-success" type="submit">Buscar</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div
+                class="alert
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        alert-danger
+                    {% else %}
+                        alert-success
+                    {% endif %}
+                ">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Abreviación</th>
+                <th>Unidad Académica</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyResultados">
+            {% for programa in object_list %}
+              <tr>
+                <td>{{programa.nombre}}</td>
+                <td>
+                    {% if programa.abreviacion %}
+                        {{programa.abreviacion}}
+                    {% else %}
+                        No tiene
+                    {% endif %}
+                </td>
+                <td>{{programa.unidad_academica}}</td>
+                <td>
+                    <button type="button" 
+                        data-nombre="{{programa.nombre}}" 
+                        data-url="{% url 'eliminar_programa' programa.pk %}" 
+                        class="btn btn-danger" 
+                        data-toggle="modal" 
+                        data-target="#modalEliminar">
+                       Eliminar
+                    </button>
+                <td><a href="{% url 'editar_programa' programa.pk %}">Editar</a></td>
+              </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if object_list.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <a href="?page={{ object_list.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+        </span>
+
+        {% if object_list.has_next %}
+        <a href="?page={{ object_list.next_page_number }}">next</a>
+        <a href="?page={{ object_list.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+<div class="modal fade" id="modalEliminar">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirmación</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="form">
+                    {% csrf_token %}
+                    <p>¿Deseas eliminar el programa <b><span id="labelNombre"></span></b>?</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+{% endblock contenido %}
+
+{% block scripts %}
+    <script>
+        $('.btn-danger').on('click', function () {
+            $('#form').attr('action', $(this).data('url'));
+            $('#labelNombre').text($(this).data('nombre'));
+        });
+    </script>
+    
+{% endblock scripts %}
