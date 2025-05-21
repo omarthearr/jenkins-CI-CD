@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.urls  import reverse_lazy
+from django.urls import reverse_lazy
 from django.core.paginator import Paginator
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from .models import Materia, UnidadAcademica, ProgramaAcademico
 from .forms import FormMateria, FormUnidadAcademica, FormProgramaAcademimco, FormFiltrosProgramaAcademico
@@ -14,6 +14,7 @@ from .forms import FormMateria, FormUnidadAcademica, FormProgramaAcademimco, For
 @login_required
 def home(request):
     return render(request, 'home.html')
+
 
 class ProgramaDeleteView(DeleteView):
     model = ProgramaAcademico
@@ -24,32 +25,35 @@ class ProgramaDeleteView(DeleteView):
         try:
             self.object.delete()
             messages.success(self.request, 'Se eliminó el programa académico')
-        except:
+        except ProgramaAcademico.DoesNotExist:
             messages.error(self.request, 'No se pudo eliminar el programa académico')
         return redirect(success_url)
+
 
 class ProgramaUpdateView(UpdateView):
     model = ProgramaAcademico
     extra_context = {
-        'etiqueta_titulo':'Actualizar programa académico',
-        'etiqueta_boton':'Guardar',
+        'etiqueta_titulo': 'Actualizar programa académico',
+        'etiqueta_boton': 'Guardar',
     }
     # fields = '__all__'
     form_class = FormProgramaAcademimco
-    
-    success_url = reverse_lazy('lista_programas') # /materias/lista-materias
+
+    success_url = reverse_lazy('lista_programas')  # /materias/lista-materias
+
 
 class ProgramaCreateView(PermissionRequiredMixin, CreateView):
     permission_required = 'materias.add_materia'
     model = ProgramaAcademico
     extra_context = {
-        'etiqueta_titulo':'Crear programa académico',
-        'etiqueta_boton':'Agregar',
+        'etiqueta_titulo': 'Crear programa académico',
+        'etiqueta_boton': 'Agregar',
     }
     # fields = '__all__'
     form_class = FormProgramaAcademimco
-    success_url = reverse_lazy('lista_programas') # /materias/lista-materias
-    # form_class = 
+    success_url = reverse_lazy('lista_programas')  # /materias/lista-materias
+    # form_class =
+
 
 def lista_programas_filter(request):
     programas = ProgramaAcademico.objects.all().order_by('-nombre')
@@ -63,12 +67,13 @@ def lista_programas_filter(request):
         if nombre:
             # programas = programas.filter(nombre__startswith = nombre)
             # programas = programas.filter(nombre__endswith = nombre)
-            programas = programas.filter(nombre__contains = nombre)
+            programas = programas.filter(nombre__contains=nombre)
         if unidad_academica:
-            programas = programas.filter(unidad_academica__nombre__contains = unidad_academica)
+            programas = programas.filter(
+                unidad_academica__nombre__contains=unidad_academica)
             print(programas.query)
         if abreviacion:
-            programas = programas.filter(abreviacion__contains = abreviacion)
+            programas = programas.filter(abreviacion__contains=abreviacion)
 
     # print(programas.query)
 
@@ -80,6 +85,7 @@ def lista_programas_filter(request):
         'form': form
     }
     return render(request, 'materias/programaacademico_list.html', context)
+
 
 class ProgramasListView(ListView):
     model = ProgramaAcademico
@@ -94,7 +100,7 @@ class ProgramasListView(ListView):
             queryset = queryset.all()
         elif self.model is not None:
             queryset = self.model._default_manager.all()
-        
+
         # ordering = self.get_ordering()
         # if ordering:
         #     if isinstance(ordering, str):
@@ -138,6 +144,7 @@ def nueva_unidad(request):
     }
     return render(request, 'nueva_unidad.html', context)
 
+
 def lista_unidades(request):
     unidades_academicas = UnidadAcademica.objects.all()
     # select * from unidadadacademica;
@@ -154,12 +161,14 @@ def nueva(request):
     }
     return render(request, 'nueva_materia.html', context)
 
+
 def eliminar(request, clave):
     Materia.objects.get(clave=clave).delete()
     return redirect('lista_materias')
 
+
 def lista(request):
     context = {
-        'materias' : Materia.objects.all()
+        'materias': Materia.objects.all()
     }
     return render(request, 'materias.html', context)

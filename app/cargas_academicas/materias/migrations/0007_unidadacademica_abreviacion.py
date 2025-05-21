@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='unidadacademica',
             name='abreviacion',
-            field=models.CharField(blank=True, max_length=5, null=True, verbose_name='Abreviación'),
+            field=models.CharField(
+                blank=True, max_length=5, null=True, verbose_name='Abreviación'),
         ),
     ]

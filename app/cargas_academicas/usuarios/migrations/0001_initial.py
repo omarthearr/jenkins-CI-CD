@@ -18,27 +18,35 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Alumno',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('matricula', models.CharField(max_length=10)),
                 ('nombre', models.CharField(max_length=60)),
                 ('apelllido_paterno', models.CharField(max_length=80)),
-                ('apelllido_materno', models.CharField(blank=True, max_length=60, null=True)),
+                ('apelllido_materno', models.CharField(
+                    blank=True, max_length=60, null=True)),
                 ('fecha_nacimiento', models.DateField()),
-                ('programa_academico', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='materias.programaacademico', verbose_name='Programa académico')),
-                ('usuario', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='usuario')),
+                ('programa_academico', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING,
+                 to='materias.programaacademico', verbose_name='Programa académico')),
+                ('usuario', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE,
+                 to=settings.AUTH_USER_MODEL, verbose_name='usuario')),
             ],
         ),
         migrations.CreateModel(
             name='Docente',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('rfc', models.CharField(max_length=13)),
                 ('nombre', models.CharField(max_length=60)),
                 ('apelllido_paterno', models.CharField(max_length=80)),
-                ('apelllido_materno', models.CharField(blank=True, max_length=60, null=True)),
+                ('apelllido_materno', models.CharField(
+                    blank=True, max_length=60, null=True)),
                 ('fecha_nacimiento', models.DateField()),
-                ('programa_academico', models.ManyToManyField(to='materias.programaacademico', verbose_name='Programa académico')),
-                ('usuario', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='usuario')),
+                ('programa_academico', models.ManyToManyField(
+                    to='materias.programaacademico', verbose_name='Programa académico')),
+                ('usuario', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE,
+                 to=settings.AUTH_USER_MODEL, verbose_name='usuario')),
             ],
         ),
     ]

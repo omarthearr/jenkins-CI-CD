@@ -14,15 +14,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ProgramaAcademico',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre', models.CharField(max_length=250, verbose_name='Nombre')),
-                ('abreviacion', models.CharField(max_length=5, verbose_name='Abreviación')),
+                ('abreviacion', models.CharField(
+                    max_length=5, verbose_name='Abreviación')),
             ],
         ),
         migrations.AddField(
             model_name='materia',
             name='programa_academico',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='materias.programaacademico', verbose_name='Programa académico'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE,
+                                    to='materias.programaacademico', verbose_name='Programa académico'),
             preserve_default=False,
         ),
     ]

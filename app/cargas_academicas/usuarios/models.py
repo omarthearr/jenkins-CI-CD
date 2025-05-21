@@ -8,10 +8,12 @@ class Alumno(models.Model):
     apelllido_paterno = models.CharField(max_length=80)
     apelllido_materno = models.CharField(max_length=60, null=True, blank=True)
     programa_academico = models.ForeignKey(
-        "materias.ProgramaAcademico", 
+        "materias.ProgramaAcademico",
         verbose_name="Programa académico", on_delete=models.DO_NOTHING)
     fecha_nacimiento = models.DateField()
-    usuario = models.OneToOneField(User, verbose_name="usuario", on_delete=models.CASCADE)
+    usuario = models.OneToOneField(
+        User, verbose_name="usuario", on_delete=models.CASCADE)
+
 
 class Docente(models.Model):
     rfc = models.CharField(max_length=13)
@@ -19,7 +21,8 @@ class Docente(models.Model):
     apelllido_paterno = models.CharField(max_length=80)
     apelllido_materno = models.CharField(max_length=60, null=True, blank=True)
     programa_academico = models.ManyToManyField(
-        "materias.ProgramaAcademico", 
+        "materias.ProgramaAcademico",
         verbose_name="Programa académico")
     fecha_nacimiento = models.DateField()
-    usuario = models.OneToOneField(User, verbose_name="usuario", on_delete=models.CASCADE)
+    usuario = models.OneToOneField(
+        User, verbose_name="usuario", on_delete=models.CASCADE)

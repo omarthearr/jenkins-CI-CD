@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Materia',
             fields=[
-                ('clave', models.CharField(max_length=50, primary_key=True, serialize=False, verbose_name='Clave')),
+                ('clave', models.CharField(max_length=50,
+                 primary_key=True, serialize=False, verbose_name='Clave')),
                 ('nombre', models.CharField(max_length=250, verbose_name='Nombre')),
                 ('creditos', models.SmallIntegerField()),
             ],

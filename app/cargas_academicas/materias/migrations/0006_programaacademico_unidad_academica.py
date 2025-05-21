@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='programaacademico',
             name='unidad_academica',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='materias.unidadacademica', verbose_name='Unidad académica'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE,
+                                    to='materias.unidadacademica', verbose_name='Unidad académica'),
             preserve_default=False,
         ),
     ]

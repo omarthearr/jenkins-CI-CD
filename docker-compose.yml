@@ -9,7 +9,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./app:/app
+      - ./app/cargas_academicas:/app
       - ./pruebas_aceptacion:/pruebas_aceptacion
 
     environment:

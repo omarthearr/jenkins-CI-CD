@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-  # SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -72,8 +72,8 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER_ADMIN'),
         'PASSWORD': os.environ.get('DB_ROOT_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),        
-        'PORT': '3306',   
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': '3306',
     }
 }
 
@@ -118,7 +118,7 @@ STATICFILES_DIRS = (
 )
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 
-LOGIN_URL = reverse_lazy('login') #/usuarios/login
+LOGIN_URL = reverse_lazy('login')  # /usuarios/login
 LOGIN_REDIRECT_URL = reverse_lazy('home')
 LOGOUT_REDIRECT_URL = reverse_lazy('login')
 
@@ -127,7 +127,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 # tu correo de gmail
 EMAIL_HOST_USER = 'ingsoftware@uaz.edu.mx'
-# hash generado en la autenticación de dos factores en la sección de aplicaciones 
+# hash generado en la autenticación de dos factores en la sección de aplicaciones
 EMAIL_HOST_PASSWORD = 'fcsjszxkvwnzmzmc'
 EMAIL_PORT = 587
 

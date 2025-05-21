@@ -18,7 +18,8 @@ RUN ln -snf  /etc/l/usr/share/zoneinfo/$TZocaltime && echo $TZ > /etc/timezone
 
 
 RUN ls
-COPY ./requirements-dev.txt /app/
+COPY ./requirements-prod.txt /app/
+COPY ./app/cargas_academicas /app/
 
 WORKDIR /app
 
@@ -31,7 +32,7 @@ ENV PATH="/env/bin:$PATH"
 
 #RUN mkdir /app/media && chown :www-data /app/media -R && chmod 775 /app/media -R
 RUN /env/bin/pip install --upgrade pip
-RUN /env/bin/pip install -r /app/requirements-dev.txt
+RUN /env/bin/pip install -r /app/requirements-prod.txt
 
 
 CMD ["apachectl", "-D", "FOREGROUND"]
