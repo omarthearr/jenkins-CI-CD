@@ -19,14 +19,13 @@ pipeline {
         }
         stage('Analisis de codigo') {
             steps {
-                timeout(time: 2, unit: 'MINUTES') {
-                    sh 'docker exec cargas_academicas_app flake8 --max-complexity=10 --max-line-length=200 --ignore=F811 .'
-                }
+                sh 'docker exec cargas_academicas_app flake8 --max-complexity=10 --max-line-length=200 --ignore=F811 .'
             }
         }
         stage('Pruebas unitarias') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
+                    sleep time: 30, unit: 'SECONDS'
                     sh 'docker exec cargas_academicas_app python3 manage.py test'
                     sh """docker exec cargas_academicas_app bash -c "coverage run --branch --source='.' --omit=*test*,*migrations*,*__init*,*settings*,*apps*,*wsgi*,*admin.py,*asgi.py,manage.py,*urls.py manage.py test" """
                     sh 'docker exec cargas_academicas_app coverage html'
