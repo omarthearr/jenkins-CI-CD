@@ -83,7 +83,7 @@ pipeline {
 
                         # Respaldar el valor anterior de IMAGE_VERSION
                         if grep -q '^IMAGE_VERSION=' .env; then
-                            OLD_VERSION=$(grep '^IMAGE_VERSION=' .env | cut -d '=' -f2)
+                            OLD_VERSION=\$(grep '^IMAGE_VERSION=' .env | cut -d '=' -f2)
                             sed -i '/^IMAGE_VERSION_OLD=/d' .env
                             echo "IMAGE_VERSION_OLD=\$OLD_VERSION" >> .env
                         fi
@@ -96,13 +96,14 @@ pipeline {
                         echo "Contenido actualizado de .env:"
                         cat .env
 
-                        // # Desplegar con la nueva imagen
-                        // docker-compose pull
-                        // docker-compose up -d
-EOF
+                        # Desplegar con la nueva imagen
+                        docker-compose pull
+                        docker-compose up -d
+                        EOF
                     """
                 }
             }
+
         }
 
     //     stage('Revisión por QA') {
