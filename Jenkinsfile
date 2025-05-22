@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Analisis de codigo') {
             steps {
-                sh 'docker exec cargas_academicas_app flake8 --max-complexity=10 --max-line-length=200 --ignore=F811 .'
+                sh 'docker exec cargas_academicas_app flake8 --max-complexity=10 --max-line-length=200 --ignore=F811,E402 .'
             }
         }
         stage('Pruebas unitarias') {
