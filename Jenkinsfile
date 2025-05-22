@@ -4,8 +4,8 @@ pipeline {
         REGISTRY = 'registry.alex-mauricio.com.mx'
         IMAGE_NAME = 'cargas-academicas'
         VERSION = "v${BUILD_NUMBER}"
-        USER_SO = 'ubuntu'
-        DNS_PROD = 'ec2-44-245-216-17.us-west-2.compute.amazonaws.com'
+        USER_PROD = 'ubuntu'
+        SERVER_PROD = 'ec2-34-213-109-81.us-west-2.compute.amazonaws.com'
     }
     stages {
         stage('Inicializando...') {
@@ -74,36 +74,36 @@ pipeline {
                 }
             }
         }
-    //     stage('Desplegar en staging') {
-    //         steps {
-    //             sshagent(['prod-ssh-key']) {
-    //                 sh """
-    //                     ssh -o StrictHostKeyChecking=no ${USER_SO}@${DNS_PROD} << 'EOF'
-    //                     cd /home/ubuntu/app
+        stage('Desplegar en staging') {
+            steps {
+                sshagent(['prod-ssh-key']) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${USER_PROD}@${SERVER_PROD} << 'EOF'
+                        cd /home/ubuntu/cargas_academicas
 
-    //                     # Respaldar el valor anterior de IMAGE_VERSION
-    //                     if grep -q '^IMAGE_VERSION=' .env; then
-    //                         OLD_VERSION=$(grep '^IMAGE_VERSION=' .env | cut -d '=' -f2)
-    //                         sed -i '/^IMAGE_VERSION_OLD=/d' .env
-    //                         echo "IMAGE_VERSION_OLD=\$OLD_VERSION" >> .env
-    //                     fi
+                        # Respaldar el valor anterior de IMAGE_VERSION
+                        if grep -q '^IMAGE_VERSION=' .env; then
+                            OLD_VERSION=$(grep '^IMAGE_VERSION=' .env | cut -d '=' -f2)
+                            sed -i '/^IMAGE_VERSION_OLD=/d' .env
+                            echo "IMAGE_VERSION_OLD=\$OLD_VERSION" >> .env
+                        fi
 
-    //                     # Actualizar o agregar IMAGE_VERSION con la nueva versión
-    //                     sed -i '/^IMAGE_VERSION=/d' .env
-    //                     echo "IMAGE_VERSION=${VERSION}" >> .env
+                        # Actualizar o agregar IMAGE_VERSION con la nueva versión
+                        sed -i '/^IMAGE_VERSION=/d' .env
+                        echo "IMAGE_VERSION=${VERSION}" >> .env
 
-    //                     # Confirmar contenido del archivo
-    //                     echo "Contenido actualizado de .env:"
-    //                     cat .env
+                        # Confirmar contenido del archivo
+                        echo "Contenido actualizado de .env:"
+                        cat .env
 
-    //                     # Desplegar con la nueva imagen
-    //                     docker-compose pull
-    //                     docker-compose up -d
-    //     EOF
-    //                 """
-    //             }
-    //         }
-    //     }
+                        // # Desplegar con la nueva imagen
+                        // docker-compose pull
+                        // docker-compose up -d
+                        EOF
+                    """
+                }
+            }
+        }
 
     //     stage('Revisión por QA') {
     //         steps {

@@ -10,7 +10,7 @@ RUN apt-get install -y \
     libmariadb-dev \
     libapache2-mod-wsgi-py3 \
     pkg-config \
-    gcc 
+    gcc
 
 # Configure timezone
 ENV TZ=America/Mexico_City
@@ -18,8 +18,8 @@ RUN ln -snf  /etc/l/usr/share/zoneinfo/$TZocaltime && echo $TZ > /etc/timezone
 
 
 RUN ls
+COPY ./app/cargas_academicas /app
 COPY ./requirements-prod.txt /app/
-COPY ./app/cargas_academicas /app/
 
 WORKDIR /app
 
