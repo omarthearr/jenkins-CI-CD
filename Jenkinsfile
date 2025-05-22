@@ -136,7 +136,6 @@ if not User.objects.filter(username='admin').exists():
         failure {
             echo "El pipeline falló en algún paso."
         }
-        finall
     }
 
 }
