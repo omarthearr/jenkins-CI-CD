@@ -49,11 +49,19 @@ pipeline {
         stage('Pruebas de aceptacion') {
             steps {
                 sh 'docker exec cargas_academicas_app python manage.py migrate'
-                sh 'docker exec cargas_academicas_app python manage.py shell < create_superuser.py'
-
+                // sh 'docker exec cargas_academicas_app python manage.py shell < create_superuser.py'
+                sh '''
+docker exec cargas_academicas_app bash -c "
+echo \"
+from django.contrib.auth import get_user_model
+User = get_user_model()
+if not User.objects.filter(username='admin').exists():
+    User.objects.create_superuser('admin', 'admin@example.com', 'admin1234')
+\" | python manage.py shell
+"
+'''
                 sh 'docker exec cargas_academicas_app bash -c "python manage.py runserver 0:8000 &"'
                 sh 'docker exec -w /pruebas_aceptacion cargas_academicas_app behave features/login.feature'
-                sh 'docker compose down -v'
             }
         }
         stage('Construir imagen producción') {
@@ -119,12 +127,16 @@ pipeline {
     //     }
     }
     post {
+        always {
+                sh 'docker compose down -v'
+        }
         success {
             echo "Despliegue completado exitosamente con versión ${VERSION}"
         }
         failure {
             echo "El pipeline falló en algún paso."
         }
+        finall
     }
 
 }
