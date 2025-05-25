@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME = 'cargas-academicas'
         VERSION = "v${BUILD_NUMBER}"
         USER_PROD = 'ubuntu'
-        SERVER_PROD = 'ec2-34-213-109-81.us-west-2.compute.amazonaws.com'
+        SERVER_PROD = 'ec2-35-90-52-186.us-west-2.compute.amazonaws.com'
     }
     stages {
         stage('Inicializando...') {
@@ -27,7 +27,7 @@ pipeline {
         stage('Pruebas unitarias') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
-                    sleep time: 15, unit: 'SECONDS'
+                    sleep time: 20, unit: 'SECONDS'
                     sh 'docker exec cargas_academicas_app python3 manage.py test'
                     sh """docker exec cargas_academicas_app bash -c "coverage run --branch --source='.' --omit=*test*,*migrations*,*__init*,*settings*,*apps*,*wsgi*,*admin.py,*asgi.py,manage.py,*urls.py manage.py test" """
                     sh 'docker exec cargas_academicas_app coverage html'
