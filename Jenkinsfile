@@ -1,11 +1,12 @@
 pipeline {
     agent any
     environment {
-        REGISTRY = 'registry.alex-mauricio.com.mx'
-        IMAGE_NAME = 'cargas-academicas'
+        REGISTRY = '34.238.238.115:5000'
+        IMAGE_NAME = 'cargasdeployment2025'
         VERSION = "v${BUILD_NUMBER}"
         USER_PROD = 'ubuntu'
-        SERVER_PROD = 'ec2-35-90-52-186.us-west-2.compute.amazonaws.com'
+        SERVER_PROD = '34.238.238.115'
+        DEPLOY_PATH = '/home/ubuntu/cargasdeployment2025'
     }
     stages {
         stage('Inicializando...') {
@@ -16,7 +17,6 @@ pipeline {
         stage('Entorno de desarrollo') {
             steps {
                 sh 'docker compose up -d --build'
-                //sh 'chmod +x script_jenkins.sh'
             }
         }
         stage('Analisis de codigo') {
@@ -49,91 +49,55 @@ pipeline {
         stage('Pruebas de aceptacion') {
             steps {
                 sh 'docker exec cargas_academicas_app python manage.py migrate'
-                // sh 'docker exec cargas_academicas_app python manage.py shell < create_superuser.py'
                 sh 'docker exec cargas_academicas_app python create_superuser.py'
                 sh 'docker exec cargas_academicas_app bash -c "python manage.py runserver 0:8000 &"'
                 sh 'docker exec -w /pruebas_aceptacion cargas_academicas_app behave features/login.feature'
             }
         }
-        stage('Construir imagen producción') {
+        stage('Construir imagen produccion') {
             steps {
-                // sh 'cp /var/lib/jenkins/.env .'
-                // sh 'cp /var/lib/jenkins/settings.py .'
                 sh "docker build -t ${REGISTRY}/${IMAGE_NAME}:${VERSION} -f Dockerfile-prod ."
                 sh "docker tag ${REGISTRY}/${IMAGE_NAME}:${VERSION} ${REGISTRY}/${IMAGE_NAME}:latest"
-                // sh 'rm -rf .env settings.py'
             }
         }
         stage('Push de imagen a registry') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'registry-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh """
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin ${REGISTRY}
+                        echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin ${REGISTRY}
                         docker push ${REGISTRY}/${IMAGE_NAME}:${VERSION}
+                        docker push ${REGISTRY}/${IMAGE_NAME}:latest
                     """
                 }
             }
         }
-        stage('Desplegar en staging') {
+        stage('Desplegar en produccion') {
             steps {
-                sshagent(['prod-ssh-key']) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ${USER_PROD}@${SERVER_PROD} << 'EOF'
-                        cd /home/ubuntu/cargas_academicas
-
-                        # Respaldar el valor anterior de IMAGE_VERSION
-                        if grep -q '^IMAGE_VERSION=' .env; then
-                            OLD_VERSION=\$(grep '^IMAGE_VERSION=' .env | cut -d '=' -f2)
-                            sed -i '/^IMAGE_VERSION_OLD=/d' .env
-                            echo "IMAGE_VERSION_OLD=\$OLD_VERSION" >> .env
-                        fi
-
-                        # Actualizar o agregar IMAGE_VERSION con la nueva versión
-                        sed -i '/^IMAGE_VERSION=/d' .env
-                        echo "IMAGE_VERSION=${VERSION}" >> .env
-
-                        # Confirmar contenido del archivo
-                        echo "Contenido actualizado de .env:"
-                        cat .env
-
-                        # Desplegar con la nueva imagen
-                        docker compose up -d
-
-                        # Ejecuta migraciones, tener cuidado en producción
-                        # docker exec cargas_academicas_app python manage.py migrate
-
-                        # Crea super usuario
-                        # docker exec cargas_academicas_app python create_superuser.py
-EOF
-                    """
-                }
-            }
-
-        }
-        stage('Revisión por QA') {
-            steps {
-                input "Desplegar en producción?"
+                sh """
+                    ssh -o StrictHostKeyChecking=no ${USER_PROD}@${SERVER_PROD} '
+                        cd ${DEPLOY_PATH}
+                        docker login -u admin -p admin123 ${REGISTRY}
+                        docker compose -f docker-compose.prod.yml pull
+                        docker compose -f docker-compose.prod.yml up -d
+                    '
+                """
             }
         }
-        stage('despliegue-pro') {
+        stage('Revision por QA') {
             steps {
-                sh 'echo "Despliegue a producción"'
-                sh 'echo "Despliegue a producción"'
+                input "Desplegar en produccion?"
             }
         }
     }
     post {
         always {
-            //cleanWs()
             sh 'docker compose down -v'
         }
         success {
-            echo "Despliegue completado exitosamente con versión ${VERSION}"
+            echo "Pipeline completado exitosamente con version ${VERSION}"
         }
         failure {
-            echo "El pipeline falló en algún paso."
+            echo "El pipeline fallo en algun paso."
         }
     }
-
 }
-chuckNorris()
