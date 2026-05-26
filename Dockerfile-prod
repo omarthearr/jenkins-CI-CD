@@ -12,29 +12,42 @@ RUN apt-get install -y \
     pkg-config \
     gcc
 
-# Configure timezone
 ENV TZ=America/Mexico_City
-RUN ln -snf  /etc/l/usr/share/zoneinfo/$TZocaltime && echo $TZ > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-
-RUN ls
 COPY ./app/cargas_academicas /app
 COPY ./requirements-prod.txt /app/
 
 WORKDIR /app
 
-
 RUN python3 -m venv /env
-
 ENV PATH="/env/bin:$PATH"
 
-# RUN . /env/bin/activate
-
-#RUN mkdir /app/media && chown :www-data /app/media -R && chmod 775 /app/media -R
 RUN /env/bin/pip install --upgrade pip
 RUN /env/bin/pip install -r /app/requirements-prod.txt
 
 RUN python manage.py collectstatic --no-input
 
+RUN echo '<VirtualHost *:80>\n\
+    ServerAdmin webmaster@localhost\n\
+    DocumentRoot /app\n\
+    WSGIDaemonProcess cargas python-home=/env python-path=/app\n\
+    WSGIProcessGroup cargas\n\
+    WSGIScriptAlias / /app/cargas_academicas/wsgi.py\n\
+    \n\
+    Alias /static /app/staticfiles\n\
+    <Directory /app/staticfiles>\n\
+        Require all granted\n\
+    </Directory>\n\
+    \n\
+    <Directory /app/cargas_academicas>\n\
+        <Files wsgi.py>\n\
+            Require all granted\n\
+        </Files>\n\
+    </Directory>\n\
+    \n\
+    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
+    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
 CMD ["apachectl", "-D", "FOREGROUND"]
