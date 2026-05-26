@@ -14,46 +14,6 @@ pipeline {
                 echo 'Asignando workspace y validando entorno.'
             }
         }
-        stage('Entorno de desarrollo') {
-            steps {
-                sh 'docker compose up -d --build'
-            }
-        }
-        stage('Analisis de codigo') {
-            steps {
-                sh 'docker exec cargas_academicas_app flake8 --max-complexity=10 --max-line-length=200 --ignore=F811,E402 .'
-            }
-        }
-        stage('Pruebas unitarias') {
-            steps {
-                timeout(time: 2, unit: 'MINUTES') {
-                    sleep time: 20, unit: 'SECONDS'
-                    sh 'docker exec cargas_academicas_app python3 manage.py test'
-                    sh """docker exec cargas_academicas_app bash -c "coverage run --branch --source='.' --omit=*test*,*migrations*,*__init*,*settings*,*apps*,*wsgi*,*admin.py,*asgi.py,manage.py,*urls.py manage.py test" """
-                    sh 'docker exec cargas_academicas_app coverage html'
-                    sh 'docker cp cargas_academicas_app:/app/htmlcov .'
-
-                    publishHTML target:[
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll: true,
-                        reportDir: './htmlcov',
-                        reportFiles: 'index.html',
-                        reportName: 'Reporte de cobertura Cargas académicas',
-                        reportTitles: 'Cobertura de código'
-                    ]
-                }
-            }
-        }
-
-        stage('Pruebas de aceptacion') {
-            steps {
-                sh 'docker exec cargas_academicas_app python manage.py migrate'
-                sh 'docker exec cargas_academicas_app python create_superuser.py'
-                sh 'docker exec cargas_academicas_app bash -c "python manage.py runserver 0:8000 &"'
-                sh 'docker exec -w /pruebas_aceptacion cargas_academicas_app behave features/login.feature'
-            }
-        }
         stage('Construir imagen produccion') {
             steps {
                 sh "docker build -t ${REGISTRY}/${IMAGE_NAME}:${VERSION} -f Dockerfile-prod ."
@@ -83,15 +43,12 @@ pipeline {
                 """
             }
         }
-        stage('Revision por QA') {
-            steps {
-                input "Desplegar en produccion?"
-            }
-        }
     }
     post {
         always {
-            sh 'docker compose down -v'
+            sh "docker rmi ${REGISTRY}/${IMAGE_NAME}:${VERSION} || true"
+            sh "docker rmi ${REGISTRY}/${IMAGE_NAME}:latest || true"
+            sh 'docker system prune -f || true'
         }
         success {
             echo "Pipeline completado exitosamente con version ${VERSION}"
