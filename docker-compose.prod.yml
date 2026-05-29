@@ -1,6 +1,6 @@
 services:
   app:
-    image: 172.31.29.90:5000/cargasdeployment2025:latest
+    image: 172.31.29.90:5000/cargasdeployment2025:${IMAGE_TAG:-latest}
     container_name: cargas_academicas_app
     restart: unless-stopped
     ports:
