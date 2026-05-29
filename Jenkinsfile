@@ -53,14 +53,17 @@ ENVEOF
         }
         stage('Pruebas de aceptacion (behave)') {
             steps {
-                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                    sh '''
-                        docker compose -f ${COMPOSE_DEV} up -d selenium-hub chrome
-                        sleep 15
-                        docker compose -f ${COMPOSE_DEV} exec -T app /env/bin/python manage.py shell -c "from django.contrib.auth import get_user_model; U=get_user_model(); u,_=U.objects.get_or_create(username='admin'); u.set_password('admin1234'); u.is_staff=True; u.is_superuser=True; u.save()" || true
-                        docker compose -f ${COMPOSE_DEV} exec -T -w /pruebas_aceptacion app /env/bin/behave --no-capture --tags=-skip
-                    '''
-                }
+                sh '''
+                    docker compose -f ${COMPOSE_DEV} up -d selenium-hub chrome
+                    sleep 12
+                    # El contenedor dev corre apache (no sirve Django en :8000); levantamos runserver para los tests
+                    docker compose -f ${COMPOSE_DEV} exec -d app /env/bin/python manage.py runserver 0.0.0.0:8000
+                    sleep 6
+                    # Sembrar usuario admin para el escenario de login
+                    docker compose -f ${COMPOSE_DEV} exec -T app /env/bin/python manage.py shell -c "from django.contrib.auth import get_user_model; U=get_user_model(); u,_=U.objects.get_or_create(username='admin'); u.set_password('admin1234'); u.is_staff=True; u.is_superuser=True; u.save()"
+                    # Corre las features sin @skip (login). Las alta_* estan @skip: les falta login flow + datos (pendiente app)
+                    docker compose -f ${COMPOSE_DEV} exec -T -w /pruebas_aceptacion app /env/bin/behave --no-capture --tags=-skip
+                '''
             }
         }
         stage('Reporte de coverage') {

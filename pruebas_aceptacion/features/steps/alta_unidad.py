@@ -7,7 +7,6 @@ from time import sleep
 
 @given(u'ingreso a la plataforma en la url "{url}"')
 def step_impl(context, url):
-    context.driver = webdriver.Chrome()
     context.driver.get(url)
 
 
