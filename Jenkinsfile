@@ -1,12 +1,15 @@
 pipeline {
     agent any
     environment {
-        REGISTRY = '34.238.238.115:5000'
+        REGISTRY = '172.31.29.90:5000'
         IMAGE_NAME = 'cargasdeployment2025'
         VERSION = "v${BUILD_NUMBER}"
         USER_PROD = 'ubuntu'
-        SERVER_PROD = '34.238.238.115'
+        SERVER_PROD = '172.31.29.90'
         DEPLOY_PATH = '/home/ubuntu/cargasdeployment2025'
+    }
+    triggers {
+        githubPush()
     }
     stages {
         stage('Inicializando...') {
@@ -33,14 +36,16 @@ pipeline {
         }
         stage('Desplegar en produccion') {
             steps {
-                sh """
-                    ssh -o StrictHostKeyChecking=no ${USER_PROD}@${SERVER_PROD} '
-                        cd ${DEPLOY_PATH}
-                        docker login -u admin -p admin123 ${REGISTRY}
-                        docker compose -f docker-compose.prod.yml pull
-                        docker compose -f docker-compose.prod.yml up -d
-                    '
-                """
+                withCredentials([usernamePassword(credentialsId: 'registry-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${USER_PROD}@${SERVER_PROD} "
+                            cd ${DEPLOY_PATH} &&
+                            echo \\"\$DOCKER_PASS\\" | docker login -u \\"\$DOCKER_USER\\" --password-stdin ${REGISTRY} &&
+                            docker compose -f docker-compose.prod.yml pull &&
+                            docker compose -f docker-compose.prod.yml up -d
+                        "
+                    """
+                }
             }
         }
     }
